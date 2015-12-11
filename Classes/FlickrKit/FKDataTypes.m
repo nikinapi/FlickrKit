@@ -20,12 +20,25 @@ NSString *const FKFlickrRESTAPI = @"https://api.flickr.com/services/rest/";
 NSString *FKPermissionStringForPermission(FKPermission permission) {
 	switch (permission) {
 		case FKPermissionRead:
-			return @"READ";
+			return [@"READ" lowercaseString];
 		case FKPermissionWrite:
-			return @"WRITE";
+			return [@"WRITE" lowercaseString];
 		case FKPermissionDelete:
-			return @"DELETE";
+			return [@"DELETE" lowercaseString];
 	}
+}
+
+FKPermission FKPermissionFromString(NSString *string)
+{
+  if ([@"write" caseInsensitiveCompare:string] == NSOrderedSame)
+  {
+    return FKPermissionWrite;
+  }
+  if ([@"delete" caseInsensitiveCompare:string] == NSOrderedSame)
+  {
+    return FKPermissionDelete;
+  }
+  return FKPermissionRead;
 }
 
 NSString *FKIdentifierForSize(FKPhotoSize size) {

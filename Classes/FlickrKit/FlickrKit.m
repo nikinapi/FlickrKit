@@ -17,6 +17,7 @@
 
 #define kFKStoredTokenKey @"kFKStoredTokenKey"
 #define kFKStoredTokenSecret @"kFKStoredTokenSecret"
+#define kFKStoredPermission @"kFKStoredPermission"
 
 @interface FlickrKit ()
 @property (nonatomic, strong) NSString *apiKey;
@@ -296,6 +297,7 @@
 				} else {
 					[[NSUserDefaults standardUserDefaults] setValue:oat forKey:kFKStoredTokenKey];
 					[[NSUserDefaults standardUserDefaults] setValue:oats forKey:kFKStoredTokenSecret];
+          [[NSUserDefaults standardUserDefaults] setValue:FKPermissionStringForPermission(self.permissionGranted) forKey:kFKStoredPermission];
 					[[NSUserDefaults standardUserDefaults] synchronize];
 					self.authorized = YES;
 					self.authToken = oat;
@@ -334,8 +336,8 @@
 	
 	NSString *storedToken = [[NSUserDefaults standardUserDefaults] stringForKey:kFKStoredTokenKey];
 	NSString *storedSecret = [[NSUserDefaults standardUserDefaults] stringForKey:kFKStoredTokenSecret];
+  self.permissionGranted = FKPermissionFromString([[NSUserDefaults standardUserDefaults] stringForKey:kFKStoredPermission]);
 	if(storedToken && storedSecret) {
-		
 		NSDictionary *args = @{@"oauth_token": storedToken};
 		
 		FlickrKit *flickr = [[FlickrKit alloc] init];
@@ -377,6 +379,7 @@
 - (void) logout {
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:kFKStoredTokenKey];
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:kFKStoredTokenSecret];
+  [[NSUserDefaults standardUserDefaults] removeObjectForKey:kFKStoredPermission];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	self.authorized = NO;
 	self.authSecret = nil;
